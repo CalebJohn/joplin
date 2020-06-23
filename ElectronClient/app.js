@@ -948,6 +948,22 @@ class Application extends BaseApplication {
 			view: {
 				label: _('&View'),
 				submenu: [{
+					label: Setting.settingMetadata('autohideMenuBar').label(),
+					type: 'checkbox',
+					checked: Setting.value('autohideMenuBar'),
+					screens: ['Main'],
+					click: () => {
+						const autohide = !Setting.value('autohideMenuBar');
+						Setting.setValue('autohideMenuBar', autohide);
+						bridge().window().setAutoHideMenuBar(autohide);
+						bridge().window().setMenuBarVisibility(!autohide);
+						// Force the app to recalculate sizes after toggling the menubar
+						this.dispatch({
+							type: 'WINDOW_CONTENT_SIZE_SET',
+							size: bridge().windowContentSize(),
+						});
+					},
+				}, {
 					label: _('Toggle sidebar'),
 					screens: ['Main'],
 					accelerator: shim.isMac() ? 'Option+Command+S' : 'F10',

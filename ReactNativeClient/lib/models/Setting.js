@@ -251,6 +251,14 @@ class Setting extends BaseModel {
 				},
 			},
 
+			autohideMenuBar: {
+				value: false,
+				type: Setting.TYPE_BOOL,
+				public: false,
+				appTypes: ['desktop'],
+				label: () => _('Auto-hide menu bar'),
+			},
+
 			theme: {
 				value: Setting.THEME_LIGHT,
 				type: Setting.TYPE_INT,
