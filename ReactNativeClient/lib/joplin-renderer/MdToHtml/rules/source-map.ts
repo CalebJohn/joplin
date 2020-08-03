@@ -5,7 +5,7 @@ function installRule(markdownIt:any) {
 	const injectLineNumber = (tokens: { [x: string]: any; }, idx: string | number, options: any, env: any, self: any) => {
 		if (!!tokens[idx].map && tokens[idx].level === 0) {
 			const line = tokens[idx].map[0];
-			tokens[idx].attrJoin('class', 'line');
+			tokens[idx].attrJoin('class', 'maps-to-line');
 			tokens[idx].attrSet('source-line', `${line}`);
 		}
 		return self.renderToken(tokens, idx, options, env, self);

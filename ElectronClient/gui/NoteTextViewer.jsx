@@ -157,6 +157,25 @@ class NoteTextViewerComponent extends React.Component {
 		// return this.webviewRef_.current.isDevToolsOpened();
 	}
 
+	getMappedLines() {
+		const lines = this.webviewRef_.current.contentWindow.document.getElementsByClassName('maps-to-line');
+		if (lines.length === 0) return [];
+
+		const contentElement = this.webviewRef_.current.contentWindow.document.getElementById('joplin-container-content');
+		const height = Math.max(0, contentElement.scrollHeight - contentElement.clientHeight);
+		const start = lines[0].getBoundingClientRect().top;
+
+		const map = [];
+
+		for (let i = 0; i < lines.length; i++) {
+			const l = lines[i];
+			const t = l.getBoundingClientRect().top;
+			map.push({ line: Number(l.getAttribute('source-line')), p: (t - start) / height });
+		}
+
+		return map;
+	}
+
 	// ----------------------------------------------------------------
 	// Wrap WebView functions (END)
 	// ----------------------------------------------------------------

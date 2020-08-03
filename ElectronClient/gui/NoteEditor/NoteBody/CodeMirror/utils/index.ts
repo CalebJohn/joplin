@@ -68,7 +68,25 @@ export function useScrollHandler(editorRef: any, webviewRef: any, onScroll: Func
 		}
 
 		if (editorRef.current) {
-			const percent = editorRef.current.getScrollPercent();
+			const cm = editorRef.current;
+			const map = webviewRef.current.wrappedInstance.getMappedLines();
+			const info = cm.getScrollInfo();
+			// let percent = cm.getScrollPercent();
+			let percent = 1.0;
+			const line = cm.lineAtHeight(info.top, 'local');
+			map.push({ line: cm.lineCount(), p: 1.0 });
+
+			for (let i = 1; i < map.length; i++) {
+				if (map[i].line >= line) {
+					const iLineHeight = cm.heightAtLine(map[i - 1].line, 'local');
+					const i1LineHeight = cm.heightAtLine(map[i].line, 'local');
+					const lineInterp = (info.top - iLineHeight) / (i1LineHeight - iLineHeight);
+					console.log(info.top, iLineHeight, i1LineHeight);
+					percent = map[i - 1].p + (map[i].p - map[i - 1].p) * lineInterp;
+					break;
+				}
+			}
+			// console.warn(cm.lineAtHeight(info.top + info.clientHeight, "local"));
 
 			setViewerPercentScroll(percent);
 		}
