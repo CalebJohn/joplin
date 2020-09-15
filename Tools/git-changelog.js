@@ -170,12 +170,13 @@ function formatCommitMessage(msg, author, options) {
 		if (t.indexOf('fix') === 0) type = 'fixed';
 		if (t.indexOf('new') === 0) type = 'new';
 		if (t.indexOf('improved') === 0) type = 'improved';
+		if (t.indexOf('security') === 0) type = 'security';
 
-		if (t.indexOf('security') === 0) {
-			type = 'security';
-			parts.splice(0, 1);
-			message = parts.join(':').trim();
-		}
+		// if (t.indexOf('security') === 0) {
+		// 	type = 'security';
+		// 	parts.splice(0, 1);
+		// 	message = parts.join(':').trim();
+		// }
 
 		if (!type) {
 			type = detectType(message);
@@ -195,6 +196,8 @@ function formatCommitMessage(msg, author, options) {
 	};
 
 	const commitMessage = parseCommitMessage(output, subModule);
+
+	console.info(commitMessage);
 
 	const messagePieces = [];
 	messagePieces.push(`${capitalizeFirstLetter(commitMessage.type)}`);
@@ -248,7 +251,9 @@ function capitalizeFirstLetter(string) {
 
 function decreaseTagVersion(tag) {
 	const s = tag.split('.');
-	let num = Number(s.pop());
+	const lastToken = s.pop();
+	const s2 = lastToken.split('-');
+	let num = Number(s2[0]);
 	num--;
 	if (num < 0) throw new Error(`Cannot decrease tag version: ${tag}`);
 	s.push(`${num}`);
