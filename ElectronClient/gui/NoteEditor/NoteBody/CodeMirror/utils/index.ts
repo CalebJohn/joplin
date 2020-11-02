@@ -71,18 +71,20 @@ export function useScrollHandler(editorRef: any, webviewRef: any, onScroll: Func
 			const cm = editorRef.current;
 			const map = webviewRef.current.wrappedInstance.getMappedLines();
 			const info = cm.getScrollInfo();
-			// let percent = cm.getScrollPercent();
-			let percent = 1.0;
+			let percent = cm.getScrollPercent();
+			// let percent = 1.0;
 			const line = cm.lineAtHeight(info.top, 'local');
 			map.push({ line: cm.lineCount(), p: 1.0 });
+			// TODO: need some concept of a *last line* so that when the editor hits the bottom
+			// of the screen (100% scroll) the viewer will do the same
 
 			for (let i = 1; i < map.length; i++) {
-				if (map[i].line >= line) {
+				if (map[i].line > line) {
 					const iLineHeight = cm.heightAtLine(map[i - 1].line, 'local');
 					const i1LineHeight = cm.heightAtLine(map[i].line, 'local');
 					const lineInterp = (info.top - iLineHeight) / (i1LineHeight - iLineHeight);
-					console.log(info.top, iLineHeight, i1LineHeight);
 					percent = map[i - 1].p + (map[i].p - map[i - 1].p) * lineInterp;
+					// console.log(info.top, iLineHeight, i1LineHeight, lineInterp, map[i].line, map[i-1].line, percent, map[i].p);
 					break;
 				}
 			}

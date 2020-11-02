@@ -162,8 +162,9 @@ class NoteTextViewerComponent extends React.Component {
 		if (lines.length === 0) return [];
 
 		const contentElement = this.webviewRef_.current.contentWindow.document.getElementById('joplin-container-content');
+		const firstChild = this.webviewRef_.current.contentWindow.document.getElementById('rendered-md');
 		const height = Math.max(0, contentElement.scrollHeight - contentElement.clientHeight);
-		const start = lines[0].getBoundingClientRect().top;
+		const start = firstChild.getBoundingClientRect().top;
 
 		const map = [];
 
@@ -172,6 +173,8 @@ class NoteTextViewerComponent extends React.Component {
 			const t = l.getBoundingClientRect().top;
 			map.push({ line: Number(l.getAttribute('source-line')), p: (t - start) / height });
 		}
+
+		if (map[0].line !== 0) { map.splice(0, 0, { line: 0, p: 0 }); }
 
 		return map;
 	}
