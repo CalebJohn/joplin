@@ -33,6 +33,11 @@
 			"default": 0,
 			"$comment": "private"
 		},
+		"sync.startupOperation": {
+			"type": "integer",
+			"default": 0,
+			"$comment": "private"
+		},
 		"sync.2.path": {
 			"type": "string",
 			"default": "",
@@ -273,7 +278,8 @@
 				"MM/DD/YY",
 				"YYYY-MM-DD",
 				"DD.MM.YYYY",
-				"YYYY.MM.DD"
+				"YYYY.MM.DD",
+				"YYMMDD"
 			]
 		},
 		"timeFormat": {
@@ -613,12 +619,12 @@
 		"style.editor.fontFamily": {
 			"type": "string",
 			"default": "",
-			"description": "Editor font family. If the font is incorrect or empty, it will default to a generic monospace font."
+			"description": "Editor font family. Used for most text in the markdown editor. If not found, a generic proportional (variable width) font is used."
 		},
 		"style.editor.monospaceFontFamily": {
 			"type": "string",
 			"default": "",
-			"description": "Editor monospace font family. This should be a *monospace* font or some elements will render incorrectly. If the font is incorrect or empty, it will default to a generic monospace font."
+			"description": "Editor monospace font family. Used where a fixed width font is needed to lay out text legibly (e.g. tables, checkboxes, code). If not found, a generic monospace (fixed width) font is used."
 		},
 		"ui.layout": {
 			"type": "object",
@@ -718,6 +724,12 @@
 			"type": "boolean",
 			"default": false,
 			"description": "Enable spell checking in Markdown editor? (WARNING BETA feature). Spell checker in the Markdown editor was previously unstable (cursor location was not stable, sometimes edits would not be saved or reflected in the viewer, etc.) however it appears to be more reliable now. If you notice any issue, please report it on GitHub or the Joplin Forum (Help -> Joplin Forum)",
+			"$comment": "private"
+		},
+		"image.noresizing": {
+			"type": "boolean",
+			"default": false,
+			"description": "Do not resize images",
 			"$comment": "private"
 		},
 		"net.customCertificates": {
@@ -838,6 +850,11 @@
 			"type": "integer",
 			"default": 2,
 			"description": "Note area growth factor. The factor property sets how the item will grow or shrink to fit the available space in its container with respect to the other items. Thus an item with a factor of 2 will take twice as much space as an item with a factor of 1.Restart app to see changes."
+		},
+		"isSafeMode": {
+			"type": "boolean",
+			"default": false,
+			"$comment": "private"
 		}
 	}
 }
