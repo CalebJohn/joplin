@@ -13,8 +13,6 @@ import KeymapService from '../services/KeymapService';
 import KvStore from '../services/KvStore';
 import KeychainServiceDriver from '../services/keychain/KeychainServiceDriver.node';
 import KeychainServiceDriverDummy from '../services/keychain/KeychainServiceDriver.dummy';
-import PluginRunner from '../../app-cli/app/services/plugins/PluginRunner';
-import PluginService from '../services/plugins/PluginService';
 import FileApiDriverJoplinServer from '../file-api-driver-joplinServer';
 import OneDriveApi from '../onedrive-api';
 import SyncTargetOneDrive from '../SyncTargetOneDrive';
@@ -52,7 +50,8 @@ const WebDavApi = require('../WebDavApi');
 const DropboxApi = require('../DropboxApi');
 import JoplinServerApi from '../JoplinServerApi';
 import { FolderEntity } from '../services/database/types';
-import { credentialFile } from '../utils/credentialFiles';
+import { credentialFile, readCredentialFile } from '../utils/credentialFiles';
+import SyncTargetJoplinCloud from '../SyncTargetJoplinCloud';
 const { loadKeychainServiceAndSettings } = require('../services/SettingUtils');
 const md5 = require('md5');
 const S3 = require('aws-sdk/clients/s3');
@@ -114,6 +113,7 @@ SyncTargetRegistry.addClass(SyncTargetNextcloud);
 SyncTargetRegistry.addClass(SyncTargetDropbox);
 SyncTargetRegistry.addClass(SyncTargetAmazonS3);
 SyncTargetRegistry.addClass(SyncTargetJoplinServer);
+SyncTargetRegistry.addClass(SyncTargetJoplinCloud);
 
 let syncTargetName_ = '';
 let syncTargetId_: number = null;
@@ -435,7 +435,8 @@ async function synchronizerStart(id: number = null, extraOptions: any = null) {
 	if (id === null) id = currentClient_;
 
 	const contextKey = `sync.${syncTargetId()}.context`;
-	const context = Setting.value(contextKey);
+	const contextString = Setting.value(contextKey);
+	const context = contextString ? JSON.parse(contextString) : {};
 
 	const options = Object.assign({}, extraOptions);
 	if (context) options.context = context;
@@ -571,13 +572,23 @@ async function initFileApi() {
 	} else if (syncTargetId_ == SyncTargetRegistry.nameToId('joplinServer')) {
 		mustRunInBand();
 
+		const joplinServerAuth = JSON.parse(await readCredentialFile('joplin-server-test-units-2.json'));
+
+		// const joplinServerAuth = {
+		//     "email": "admin@localhost",
+		//     "password": "admin",
+		//     "baseUrl": "http://api-joplincloud.local:22300",
+		//     "userContentBaseUrl": ""
+		// }
+
 		// Note that to test the API in parallel mode, you need to use Postgres
 		// as database, as the SQLite database is not reliable when being
 		// read/write from multiple processes at the same time.
 		const api = new JoplinServerApi({
-			baseUrl: () => 'http://localhost:22300',
-			username: () => 'admin@localhost',
-			password: () => 'admin',
+			baseUrl: () => joplinServerAuth.baseUrl,
+			userContentBaseUrl: () => joplinServerAuth.userContentBaseUrl,
+			username: () => joplinServerAuth.email,
+			password: () => joplinServerAuth.password,
 		});
 
 		fileApi = new FileApi('', new FileApiDriverJoplinServer(api));
@@ -766,45 +777,6 @@ async function createTempDir() {
 	return tempDirPath;
 }
 
-interface PluginServiceOptions {
-	getState?(): Record<string, any>;
-}
-
-function newPluginService(appVersion = '1.4', options: PluginServiceOptions = null): PluginService {
-	options = options || {};
-
-	const runner = new PluginRunner();
-	const service = new PluginService();
-	service.initialize(
-		appVersion,
-		{
-			joplin: {},
-		},
-		runner,
-		{
-			dispatch: () => {},
-			getState: options.getState ? options.getState : () => {},
-		}
-	);
-	return service;
-}
-
-function newPluginScript(script: string) {
-	return `
-		/* joplin-manifest:
-		{
-			"id": "org.joplinapp.plugins.PluginTest",
-			"manifest_version": 1,
-			"app_min_version": "1.4",
-			"name": "JS Bundle test",
-			"version": "1.0.0"
-		}
-		*/
-		
-		${script}
-	`;
-}
-
 async function waitForFolderCount(count: number) {
 	const timeout = 2000;
 	const startTime = Date.now();
@@ -901,4 +873,4 @@ class TestApp extends BaseApplication {
 	}
 }
 
-export { supportDir, waitForFolderCount, afterAllCleanUp, exportDir, newPluginService, newPluginScript, synchronizerStart, afterEachCleanUp, syncTargetName, setSyncTargetName, syncDir, createTempDir, isNetworkSyncTarget, kvStore, expectThrow, logger, expectNotThrow, resourceService, resourceFetcher, tempFilePath, allSyncTargetItemsEncrypted, msleep, setupDatabase, revisionService, setupDatabaseAndSynchronizer, db, synchronizer, fileApi, sleep, clearDatabase, switchClient, syncTargetId, objectsEqual, checkThrowAsync, checkThrow, encryptionService, loadEncryptionMasterKey, fileContentEqual, decryptionWorker, currentClientId, id, ids, sortedIds, at, createNTestNotes, createNTestFolders, createNTestTags, TestApp };
+export { supportDir, waitForFolderCount, afterAllCleanUp, exportDir, synchronizerStart, afterEachCleanUp, syncTargetName, setSyncTargetName, syncDir, createTempDir, isNetworkSyncTarget, kvStore, expectThrow, logger, expectNotThrow, resourceService, resourceFetcher, tempFilePath, allSyncTargetItemsEncrypted, msleep, setupDatabase, revisionService, setupDatabaseAndSynchronizer, db, synchronizer, fileApi, sleep, clearDatabase, switchClient, syncTargetId, objectsEqual, checkThrowAsync, checkThrow, encryptionService, loadEncryptionMasterKey, fileContentEqual, decryptionWorker, currentClientId, id, ids, sortedIds, at, createNTestNotes, createNTestFolders, createNTestTags, TestApp };

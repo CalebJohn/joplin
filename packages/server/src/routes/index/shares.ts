@@ -1,5 +1,6 @@
 import { SubPath, ResponseType, Response } from '../../utils/routeUtils';
 import Router from '../../utils/Router';
+import { RouteType } from '../../utils/types';
 import { AppContext } from '../../utils/types';
 import { ErrorNotFound } from '../../utils/errors';
 import { Item, Share } from '../../db';
@@ -18,7 +19,7 @@ async function renderItem(context: AppContext, item: Item, share: Share): Promis
 	};
 }
 
-const router: Router = new Router();
+const router: Router = new Router(RouteType.Web);
 
 router.public = true;
 
@@ -39,6 +40,6 @@ router.get('shares/:id', async (path: SubPath, ctx: AppContext) => {
 	ctx.response.set('Content-Type', result.mime);
 	ctx.response.set('Content-Length', result.size.toString());
 	return new Response(ResponseType.KoaResponse, ctx.response);
-});
+}, RouteType.UserContent);
 
 export default router;

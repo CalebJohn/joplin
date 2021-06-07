@@ -22,7 +22,7 @@ export default class ShareService {
 	}
 
 	public get enabled(): boolean {
-		return Setting.value('sync.target') === 9; // Joplin Server target
+		return [9, 10].includes(Setting.value('sync.target')); // Joplin Server, Joplin Cloud targets
 	}
 
 	private get store(): Store<any> {
@@ -36,10 +36,13 @@ export default class ShareService {
 	private api(): JoplinServerApi {
 		if (this.api_) return this.api_;
 
+		const syncTargetId = Setting.value('sync.target');
+
 		this.api_ = new JoplinServerApi({
-			baseUrl: () => Setting.value('sync.9.path'),
-			username: () => Setting.value('sync.9.username'),
-			password: () => Setting.value('sync.9.password'),
+			baseUrl: () => Setting.value(`sync.${syncTargetId}.path`),
+			userContentBaseUrl: () => Setting.value(`sync.${syncTargetId}.userContentPath`),
+			username: () => Setting.value(`sync.${syncTargetId}.username`),
+			password: () => Setting.value(`sync.${syncTargetId}.password`),
 		});
 
 		return this.api_;
@@ -134,7 +137,7 @@ export default class ShareService {
 	}
 
 	public shareUrl(share: StateShare): string {
-		return `${this.api().baseUrl()}/shares/${share.id}`;
+		return `${this.api().userContentBaseUrl()}/shares/${share.id}`;
 	}
 
 	public get shares() {

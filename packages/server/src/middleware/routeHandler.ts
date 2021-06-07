@@ -1,18 +1,9 @@
 import { routeResponseFormat, Response, RouteResponseFormat, execRequest } from '../utils/routeUtils';
 import { AppContext, Env } from '../utils/types';
-import MustacheService, { isView, View } from '../services/MustacheService';
-import config from '../config';
-
-let mustache_: MustacheService = null;
-function mustache(): MustacheService {
-	if (!mustache_) {
-		mustache_ = new MustacheService(config().viewDir, config().baseUrl);
-	}
-	return mustache_;
-}
+import { isView, View } from '../services/MustacheService';
 
 export default async function(ctx: AppContext) {
-	ctx.appLogger().info(`${ctx.request.method} ${ctx.path}`);
+	const requestStartTime = Date.now();
 
 	try {
 		const responseObject = await execRequest(ctx.routes, ctx);
@@ -21,7 +12,7 @@ export default async function(ctx: AppContext) {
 			ctx.response = responseObject.response;
 		} else if (isView(responseObject)) {
 			ctx.response.status = 200;
-			ctx.response.body = await mustache().renderView(responseObject, {
+			ctx.response.body = await ctx.services.mustache.renderView(responseObject, {
 				notifications: ctx.notifications || [],
 				hasNotifications: !!ctx.notifications && !!ctx.notifications.length,
 				owner: ctx.owner,
@@ -44,7 +35,9 @@ export default async function(ctx: AppContext) {
 
 		const responseFormat = routeResponseFormat(ctx);
 
-		if (responseFormat === RouteResponseFormat.Html) {
+		if (error.code === 'invalidOrigin') {
+			ctx.response.body = error.message;
+		} else if (responseFormat === RouteResponseFormat.Html) {
 			ctx.response.set('Content-Type', 'text/html');
 			const view: View = {
 				name: 'error',
@@ -55,7 +48,7 @@ export default async function(ctx: AppContext) {
 					owner: ctx.owner,
 				},
 			};
-			ctx.response.body = await mustache().renderView(view);
+			ctx.response.body = await ctx.services.mustache.renderView(view);
 		} else { // JSON
 			ctx.response.set('Content-Type', 'application/json');
 			const r: any = { error: error.message };
@@ -63,5 +56,10 @@ export default async function(ctx: AppContext) {
 			if (error.code) r.code = error.code;
 			ctx.response.body = r;
 		}
+	} finally {
+		// Technically this is not the total request duration because there are
+		// other middlewares but that should give a good approximation
+		const requestDuration = Date.now() - requestStartTime;
+		ctx.appLogger().info(`${ctx.request.method} ${ctx.path} (${requestDuration}ms)`);
 	}
 }
