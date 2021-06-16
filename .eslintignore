@@ -140,6 +140,9 @@ packages/app-desktop/commands/openProfileDirectory.js.map
 packages/app-desktop/commands/replaceMisspelling.d.ts
 packages/app-desktop/commands/replaceMisspelling.js
 packages/app-desktop/commands/replaceMisspelling.js.map
+packages/app-desktop/commands/restoreNoteRevision.d.ts
+packages/app-desktop/commands/restoreNoteRevision.js
+packages/app-desktop/commands/restoreNoteRevision.js.map
 packages/app-desktop/commands/startExternalEditing.d.ts
 packages/app-desktop/commands/startExternalEditing.js
 packages/app-desktop/commands/startExternalEditing.js.map
@@ -275,6 +278,9 @@ packages/app-desktop/gui/MainScreen/commands/showNoteContentProperties.js.map
 packages/app-desktop/gui/MainScreen/commands/showNoteProperties.d.ts
 packages/app-desktop/gui/MainScreen/commands/showNoteProperties.js
 packages/app-desktop/gui/MainScreen/commands/showNoteProperties.js.map
+packages/app-desktop/gui/MainScreen/commands/showPrompt.d.ts
+packages/app-desktop/gui/MainScreen/commands/showPrompt.js
+packages/app-desktop/gui/MainScreen/commands/showPrompt.js.map
 packages/app-desktop/gui/MainScreen/commands/showShareFolderDialog.d.ts
 packages/app-desktop/gui/MainScreen/commands/showShareFolderDialog.js
 packages/app-desktop/gui/MainScreen/commands/showShareFolderDialog.js.map
@@ -974,6 +980,9 @@ packages/lib/models/dateTimeFormats.test.js.map
 packages/lib/models/settings/FileHandler.d.ts
 packages/lib/models/settings/FileHandler.js
 packages/lib/models/settings/FileHandler.js.map
+packages/lib/models/utils/itemCanBeEncrypted.d.ts
+packages/lib/models/utils/itemCanBeEncrypted.js
+packages/lib/models/utils/itemCanBeEncrypted.js.map
 packages/lib/models/utils/paginatedFeed.d.ts
 packages/lib/models/utils/paginatedFeed.js
 packages/lib/models/utils/paginatedFeed.js.map
@@ -1163,6 +1172,9 @@ packages/lib/services/interop/InteropService_Importer_Raw.js.map
 packages/lib/services/interop/types.d.ts
 packages/lib/services/interop/types.js
 packages/lib/services/interop/types.js.map
+packages/lib/services/joplinServer/personalizedUserContentBaseUrl.d.ts
+packages/lib/services/joplinServer/personalizedUserContentBaseUrl.js
+packages/lib/services/joplinServer/personalizedUserContentBaseUrl.js.map
 packages/lib/services/keychain/KeychainService.d.ts
 packages/lib/services/keychain/KeychainService.js
 packages/lib/services/keychain/KeychainService.js.map
@@ -1598,6 +1610,9 @@ packages/renderer/pathUtils.js.map
 packages/renderer/utils.d.ts
 packages/renderer/utils.js
 packages/renderer/utils.js.map
+packages/tools/buildServerDocker.d.ts
+packages/tools/buildServerDocker.js
+packages/tools/buildServerDocker.js.map
 packages/tools/generate-database-types.d.ts
 packages/tools/generate-database-types.js
 packages/tools/generate-database-types.js.map

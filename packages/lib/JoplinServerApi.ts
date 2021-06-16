@@ -4,6 +4,7 @@ const { rtrimSlashes } = require('./path-utils.js');
 import JoplinError from './JoplinError';
 import { Env } from './models/Setting';
 import Logger from './Logger';
+import personalizedUserContentBaseUrl from './services/joplinServer/personalizedUserContentBaseUrl';
 const { stringify } = require('query-string');
 
 const logger = Logger.create('JoplinServerApi');
@@ -56,8 +57,8 @@ export default class JoplinServerApi {
 		return rtrimSlashes(this.options_.baseUrl());
 	}
 
-	public userContentBaseUrl() {
-		return this.options_.userContentBaseUrl() || this.baseUrl();
+	public personalizedUserContentBaseUrl(userId: string) {
+		return personalizedUserContentBaseUrl(userId, this.baseUrl(), this.options_.userContentBaseUrl());
 	}
 
 	private async session() {

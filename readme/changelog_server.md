@@ -1,5 +1,32 @@
 # Joplin Server Changelog
 
+## [server-v2.0.12](https://github.com/laurent22/joplin/releases/tag/server-v2.0.12) - 2021-06-15T16:24:42Z
+
+- Fixed: Fixed handling of user content URL (31121c8)
+
+## [server-v2.0.11](https://github.com/laurent22/joplin/releases/tag/server-v2.0.11) - 2021-06-15T11:41:41Z
+
+- New: Add navbar on login and sign up page (7a3a208)
+- New: Added option to enable or disable stack traces (5614eb9)
+- Improved: Handle custom user content URLs (a36b13d)
+- Fixed: Fixed error when creating user (594084e)
+
+## [server-v2.0.9-beta](https://github.com/laurent22/joplin/releases/tag/server-v2.0.9-beta) (Pre-release) - 2021-06-11T16:49:05Z
+
+- New: Add navbar on login and sign up page (7a3a208)
+- New: Added option to enable or disable stack traces (5614eb9)
+- Improved: Handle custom user content URLs (a36b13d)
+- Fixed: Fixed error when creating user (594084e)
+
+## [server-v2.0.6](https://github.com/laurent22/joplin/releases/tag/server-v2.0.6) (Pre-release) - 2021-06-07T17:27:27Z
+
+- New: Add Stripe integration (770af6a)
+- New: Add request duration to log (c8d7ecb)
+- New: Add terms and privacy page (db7b802)
+- New: Added way to disable signup page, and added links between signup and login pages (75d79f3)
+- Improved: Check share ID when uploading a note (3c41b45)
+- Improved: Load shared user content from correct domain (de45740)
+
 ## [server-v2.0.5](https://github.com/laurent22/joplin/releases/tag/server-v2.0.5) (Pre-release) - 2021-06-02T08:14:47Z
 
 - New: Add version number on website (0ef7e98)
